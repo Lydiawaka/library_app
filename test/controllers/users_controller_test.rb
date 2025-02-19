@@ -7,7 +7,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show user" do
-    get user_url
+    get user_url(@user)  # Ensure you're passing the correct user
     assert_response :success
     assert_select "h1", "#{@user.email}'s Profile"
   end
@@ -15,6 +15,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   private
 
   def sign_in_as(user)
-    post session_url, params: { email: user.email, password: "password" }
+    post session_url, params: { session: { email: user.email, password: "password" } }
+    follow_redirect!  # Follow redirect to verify login success
+    assert_response :success  # Ensure login was successful
   end
 end
